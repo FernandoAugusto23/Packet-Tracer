@@ -1,0 +1,124 @@
+Router_R1#sh ip int br
+Interface              IP-Address      OK? Method Status                Protocol 
+FastEthernet0/0        192.168.2.0     YES manual up                    up 
+FastEthernet0/1        unassigned      YES unset  administratively down down 
+Vlan1                  unassigned      YES unset  administratively down down
+
+Router_R1#sh arp
+Protocol  Address          Age (min)  Hardware Addr   Type   Interface
+Internet  192.168.1.0             110 0001.C754.9E01  ARPA   FastEthernet0/0
+Internet  192.168.2.0             -   0001.9682.AC01  ARPA   FastEthernet0/0
+
+Router_R1#ping 192.168.1.0
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 192.168.1.0, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 0/3/13 ms
+
+Router_R1#sh ip bgp summary
+BGP router identifier 192.168.2.0, local AS number 65001
+BGP table version is 1, main routing table version 6
+0 network entries using 0 bytes of memory
+0 path entries using 0 bytes of memory
+0/0 BGP path/bestpath attribute entries using 0 bytes of memory
+0 BGP AS-PATH entries using 0 bytes of memory
+0 BGP route-map cache entries using 0 bytes of memory
+0 BGP filter-list cache entries using 0 bytes of memory
+Bitfield cache entries: current 1 (at peak 1) using 32 bytes of memory
+BGP using 32 total bytes of memory
+BGP activity 0/0 prefixes, 0/0 paths, scan interval 60 secs
+
+Neighbor        V    AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+10.0.0.2        4 65002       0       0        1    0    0 03:23:14        4
+
+
+=====================================================
+
+Router_R1#sh run
+Building configuration...
+
+Current configuration : 758 bytes
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+no service password-encryption
+!
+hostname Router_R1
+!
+!
+!
+!
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+!
+!
+!
+license udi pid CISCO2811/K9 sn FTX1017IY9K-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 192.168.2.0 255.255.0.0
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router bgp 65001
+ bgp log-neighbor-changes
+ no synchronization
+ neighbor 10.0.0.2 remote-as 65002
+ network 192.168.0.0 mask 255.255.0.0
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+!
+!
+!
+!
+!
+line con 0
+!
+line aux 0
+!
+line vty 0 4
+ login
+!
+!
+!
+end
